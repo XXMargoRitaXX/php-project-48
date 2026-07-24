@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+$autoloadPath1 = __DIR__ . '/../../../autoload.php';
+$autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($autoloadPath1)) {
+    require_once $autoloadPath1;
+} else {
+    require_once $autoloadPath2;
+}
+
+$docoptPath = __DIR__ . '/../vendor/docopt/docopt/src/docopt.php';
+require $docoptPath;
+
+$doc = <<<DOC
+Generate diff
+
+Usage:
+  gendiff (-h|--help)
+  gendiff (-v|--version)
+
+Options:
+  -h --help                     Show this screen
+  -v --version                  Show version
+DOC;
+
+$args = Docopt::handle($doc, ['version' => 'Generate diff 1.0']);
+
+foreach ($args as $key => $value) {
+    $jsonEncodedVal = json_encode($value);
+    echo "{$key}: {$jsonEncodedVal}\n";
+}

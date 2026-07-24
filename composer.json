@@ -1,0 +1,17 @@
+{
+    "name": "hexlet/code",
+    "bin": [
+        "bin/gendiff"
+    ],
+    "description": "hexlet php-package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "XXMargoRitaXX"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
