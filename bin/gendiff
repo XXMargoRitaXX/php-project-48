@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+use function Gendiff\Differ\genDiff;
+
 $autoloadPath1 = __DIR__ . '/../../../autoload.php';
 $autoloadPath2 = __DIR__ . '/../vendor/autoload.php';
 if (file_exists($autoloadPath1)) {
@@ -18,15 +20,19 @@ Generate diff
 Usage:
   gendiff (-h|--help)
   gendiff (-v|--version)
+  gendiff [--format <fmt>] <firstFile> <secondFile>
 
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
+  --format <fmt>                Report format [default: stylish]
 DOC;
 
 $args = Docopt::handle($doc, ['version' => 'Generate diff 1.0']);
 
-foreach ($args as $key => $value) {
-    $jsonEncodedVal = json_encode($value);
-    echo "{$key}: {$jsonEncodedVal}\n";
-}
+genDiff($args['<firstFile>'], $args['<secondFile>']);
+
+// foreach ($args as $key => $value) {
+//     $jsonEncodedVal = json_encode($value);
+//     echo "{$key}: {$jsonEncodedVal}\n";
+// }
