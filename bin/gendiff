@@ -30,9 +30,5 @@ DOC;
 
 $args = Docopt::handle($doc, ['version' => 'Generate diff 1.0']);
 
-genDiff($args['<firstFile>'], $args['<secondFile>']);
-
-// foreach ($args as $key => $value) {
-//     $jsonEncodedVal = json_encode($value);
-//     echo "{$key}: {$jsonEncodedVal}\n";
-// }
+$diff = genDiff($args['<firstFile>'], $args['<secondFile>']);
+print_r($diff);

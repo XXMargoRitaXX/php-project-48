@@ -2,14 +2,61 @@
 
 namespace Gendiff\Differ;
 
-function genDiff(string $filePath1, string $filePath2): void
+function parse(string $filePath): array
 {
-    $fileContent1 = file_get_contents($filePath1);
-    $fileContent2 = file_get_contents($filePath2);
+    $fileContent = file_get_contents($filePath);
+    $data = json_decode($fileContent, true);
 
-    $data1 = json_decode($fileContent1);
-    $data2 = json_decode($fileContent2);
+    $parsedData = $data;
+    array_walk_recursive(
+        $parsedData,
+        function (mixed &$value, string $key): void {
+            if (is_bool($value)) {
+                $value = $value ? 'true' : 'false';
+            } elseif (is_null($value)) {
+                $value = 'null';
+            } else {
+                $value = strval($value);
+            }
+        } 
+    );
 
-    print_r($data1);
-    print_r($data2);
+    return $parsedData;
+}
+
+function genDiff(string $filePath1, string $filePath2): string
+{
+    $data1 = parse($filePath1);
+    $data2 = parse($filePath2);
+
+    $data = array_merge($data1, $data2);
+    $sortedData = $data;
+    ksort($sortedData);
+    
+    $lines = array_reduce(
+        array_keys($sortedData),
+        function (array $acc, mixed $key) use ($data1, $data2): array {
+            $keyInData1 = array_key_exists($key, $data1);
+            $keyInData2 = array_key_exists($key, $data2);
+            
+            if ($keyInData1 && $keyInData2) {
+                if ($data1[$key] === $data2[$key]) {
+                    $acc[] = "  {$key}: {$data1[$key]}";
+                    return $acc;
+                }
+            }
+            
+            if ($keyInData1) {
+                $acc[] = "- {$key}: {$data1[$key]}";
+            }
+            
+            if ($keyInData2) {
+                $acc[] = "+ {$key}: {$data2[$key]}";
+            }
+            return $acc;
+        },
+        []
+    );
+
+    return "{\n  " . implode("\n  ", $lines) . "\n}\n";
 }
