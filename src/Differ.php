@@ -10,7 +10,7 @@ function parse(string $filePath): array
     $parsedData = $data;
     array_walk_recursive(
         $parsedData,
-        function (mixed &$value, string $key): void {
+        function (mixed &$value): void {
             if (is_bool($value)) {
                 $value = $value ? 'true' : 'false';
             } elseif (is_null($value)) {
@@ -39,11 +39,9 @@ function genDiff(string $filePath1, string $filePath2): string
             $keyInData1 = array_key_exists($key, $data1);
             $keyInData2 = array_key_exists($key, $data2);
 
-            if ($keyInData1 && $keyInData2) {
-                if ($data1[$key] === $data2[$key]) {
-                    $acc[] = "  {$key}: {$data1[$key]}";
-                    return $acc;
-                }
+            if ($keyInData1 && $keyInData2 && $data1[$key] === $data2[$key]) {
+                $acc[] = "  {$key}: {$data1[$key]}";
+                return $acc;
             }
 
             if ($keyInData1) {
