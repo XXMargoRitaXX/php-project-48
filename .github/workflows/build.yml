@@ -1,4 +1,4 @@
-name: Build
+name: build
 
 on: 
   - push
@@ -14,6 +14,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
+          coverage: xdebug
 
       - name: Install dependencies
         run: make install
@@ -22,10 +23,7 @@ jobs:
         run: make lint
 
       - name: Run tests
-        run: make test
-
-      - name: Run test coverage
-        run: make test-coverage
+        run: make test-coverage-xml
 
       - name: SonarQube scan
         uses: SonarSource/sonarqube-scan-action@v8

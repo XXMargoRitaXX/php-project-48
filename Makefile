@@ -11,4 +11,10 @@ test:
 	composer exec --verbose phpunit tests -- --testdox
 
 test-coverage:
-	composer exec --verbose phpunit tests -- --coverage-text
+	composer test-coverage
+
+test-coverage-html:
+	composer test-coverage-html
+
+test-coverage-xml:
+	composer test-coverage-xml

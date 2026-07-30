@@ -11,6 +11,20 @@
             "name": "XXMargoRitaXX"
         }
     ],
+    "scripts": {
+        "test-coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit tests --coverage-text"
+        ],
+        "test-coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit tests --coverage-html=coverage/html/"
+        ],
+        "test-coverage-xml": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit tests --coverage-clover=coverage/xml/clover.xml"
+        ]
+    },
     "autoload": {
         "files": [
             "src/Differ.php"

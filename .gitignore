@@ -1,4 +1,5 @@
 /asciinema/
+/coverage/
 /vendor/
 /.vscode/
 *.cache
