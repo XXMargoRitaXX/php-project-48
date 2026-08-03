@@ -18,12 +18,10 @@ class DifferTest extends TestCase
     {
         $inputFilePath1 = $this->getFixtureFullPath($inputFileName1);
         $inputFilePath2 = $this->getFixtureFullPath($inputFileName2);
+        $outputFilePath = $this->getFixtureFullPath($outputFileName);
 
-        $outputFilePath3 = $this->getFixtureFullPath($outputFileName);
-        $expected = file_get_contents($outputFilePath3);
-
-        $this->assertEquals(
-            $expected, 
+        $this->assertStringEqualsFile(
+            $outputFilePath, 
             genDiff($inputFilePath1, $inputFilePath2)
         );
     }
@@ -34,6 +32,16 @@ class DifferTest extends TestCase
             'Two valid json-files' => [
                 'file1.json', 
                 'file2.json', 
+                'file3.txt',
+            ],
+            'Two valid yaml-files' => [
+                'file1.yaml', 
+                'file2.yaml', 
+                'file3.txt',
+            ],
+            'Two valid yml-files' => [
+                'file1.yml', 
+                'file2.yml', 
                 'file3.txt',
             ],
         ];
