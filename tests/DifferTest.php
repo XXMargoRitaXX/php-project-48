@@ -29,20 +29,15 @@ class DifferTest extends TestCase
     public static function fileNamesProvider(): array
     {
         return [
-            'Two valid json-files' => [
+            'Two valid JSON files, stylish format' => [
                 'file1.json', 
                 'file2.json', 
-                'file3.txt',
+                'stylish.txt',
             ],
-            'Two valid yaml-files' => [
+            'Two valid YAML files, stylish format' => [
                 'file1.yaml', 
-                'file2.yaml', 
-                'file3.txt',
-            ],
-            'Two valid yml-files' => [
-                'file1.yml', 
                 'file2.yml', 
-                'file3.txt',
+                'stylish.txt',
             ],
         ];
     }
