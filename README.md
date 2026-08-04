@@ -15,6 +15,20 @@
 
 "Generate diff" is a program that determines the difference between two data structures.
 
-### Example:
+### Requirements:
+
+* Linux, macOS, WSL
+* Git
+* PHP >= 8.2.0
+* Composer
+* Make
+
+### Examples:
+
+1. Finding differences between two flat JSON files
 
 [![asciicast](https://asciinema.org/a/BYPKB5CAWANYChGv.svg)](https://asciinema.org/a/BYPKB5CAWANYChGv)
+
+2. Finding differences between two flat YAML files
+
+[![asciicast](https://asciinema.org/a/1OtHYB9yCaET58Tx.svg)](https://asciinema.org/a/1OtHYB9yCaET58Tx)
