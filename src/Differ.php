@@ -2,27 +2,7 @@
 
 namespace Gendiff\Differ;
 
-function parse(string $filePath): array
-{
-    $fileContent = file_get_contents($filePath);
-    $data = json_decode($fileContent, true);
-
-    $parsedData = $data;
-    array_walk_recursive(
-        $parsedData,
-        function (mixed &$value): void {
-            if (is_bool($value)) {
-                $value = $value ? 'true' : 'false';
-            } elseif (is_null($value)) {
-                $value = 'null';
-            } else {
-                $value = strval($value);
-            }
-        }
-    );
-
-    return $parsedData;
-}
+use function Gendiff\Parsers\parse;
 
 function genDiff(string $filePath1, string $filePath2): string
 {
