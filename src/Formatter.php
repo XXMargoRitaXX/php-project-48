@@ -25,7 +25,7 @@ function makeStylish(array $diff): string
                     'unchanged', 'nested' => ' ',
                     default => ' ',
                 };
-                return "{$currentIndent}{$sign} {$name}: {$iter($data, $depth + 1)}"; 
+                return "{$currentIndent}{$sign} {$name}: {$iter($data, $depth + 1)}";
             },
             array_keys($currentValue),
             $currentValue

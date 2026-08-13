@@ -26,7 +26,7 @@ function getDiff(array $data, array $data1, array $data2): array
             $keyInData1 = array_key_exists($key, $data1);
             $keyInData2 = array_key_exists($key, $data2);
 
-            
+
             if ($keyInData1 && $keyInData2 && (is_array($data1[$key]) && is_array($data2[$key]))) {
                 $acc[] = [
                     'key' => $key,
@@ -35,7 +35,7 @@ function getDiff(array $data, array $data1, array $data2): array
                 ];
                 return $acc;
             }
-        
+
             if ($keyInData1 && $keyInData2 && $data1[$key] === $data2[$key]) {
                 $acc[] = [
                     'key' => $key,
