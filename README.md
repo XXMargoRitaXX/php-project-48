@@ -25,10 +25,10 @@
 
 ### Examples:
 
-1. Finding differences between two flat JSON files
+1. Finding differences between two flat json-files
 
 [![asciicast](https://asciinema.org/a/BYPKB5CAWANYChGv.svg)](https://asciinema.org/a/BYPKB5CAWANYChGv)
 
-2. Finding differences between two flat YAML files
+2. Finding differences between two flat yaml-files
 
 [![asciicast](https://asciinema.org/a/1OtHYB9yCaET58Tx.svg)](https://asciinema.org/a/1OtHYB9yCaET58Tx)

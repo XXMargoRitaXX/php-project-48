@@ -6,24 +6,24 @@ use Symfony\Component\Yaml\Yaml;
 
 function getData(string $filePath): array
 {
+    if (!file_exists($filePath)) {
+        throw new \InvalidArgumentException("File '{$filePath}' not found");
+    }
+
     $lastDotPos = mb_strrpos($filePath, '.');
 
     if ($lastDotPos === false) {
-        throw new \InvalidArgumentException("The input file '{$filePath}' has no extension");
+        throw new \InvalidArgumentException("File '{$filePath}' has no extension");
     }
 
     $extension = mb_substr($filePath, $lastDotPos + 1);
     $fileContent = file_get_contents($filePath);
 
-    switch ($extension) {
-        case 'json':
-            return json_decode($fileContent, true);
-        case 'yaml':
-        case 'yml':
-            return Yaml::parse($fileContent);
-        default:
-            throw new \InvalidArgumentException("Unknown file extension: .{$extension}");
-    }
+    return match ($extension) {
+        'json' => json_decode($fileContent, true),
+        'yaml', 'yml' => Yaml::parse($fileContent),
+        default => throw new \InvalidArgumentException("Unsupported file format: .{$extension}"),
+    };
 }
 
 function parse(string $filePath): array
