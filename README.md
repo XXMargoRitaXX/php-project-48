@@ -13,7 +13,7 @@
 
 ### Description:
 
-"Generate diff" is a program that determines the difference between two data structures.
+"Generate diff" is a program that determines the difference between two data structures
 
 ### Requirements:
 
@@ -25,10 +25,14 @@
 
 ### Examples:
 
-1. Finding differences between two flat json-files
+1. Finding differences between two flat JSON files
 
 [![asciicast](https://asciinema.org/a/BYPKB5CAWANYChGv.svg)](https://asciinema.org/a/BYPKB5CAWANYChGv)
 
-2. Finding differences between two flat yaml-files
+2. Finding differences between two flat YAML files
 
 [![asciicast](https://asciinema.org/a/1OtHYB9yCaET58Tx.svg)](https://asciinema.org/a/1OtHYB9yCaET58Tx)
+
+3. Finding differences between two files with nested structures
+
+[![asciicast](https://asciinema.org/a/uCOYaYiodZP34DBd.svg)](https://asciinema.org/a/uCOYaYiodZP34DBd)
