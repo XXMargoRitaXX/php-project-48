@@ -1,6 +1,6 @@
 <?php
 
-namespace Gendiff\Formatter;
+namespace Gendiff\Formatters\Stylish;
 
 const SPACES_COUNT = 4;
 const REPLACER = ' ';

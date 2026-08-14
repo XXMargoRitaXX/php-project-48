@@ -2,10 +2,10 @@
 
 namespace Gendiff\Differ;
 
-use function Gendiff\Formatter\makeStylish;
+use function Gendiff\Formatters\format;
 use function Gendiff\Parsers\parse;
 
-function genDiff(string $filePath1, string $filePath2): string
+function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): string
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
@@ -15,7 +15,7 @@ function genDiff(string $filePath1, string $filePath2): string
 
     $diff = getDiff($sortedData, $data1, $data2);
 
-    return makeStylish($diff);
+    return format($diff, $format);
 }
 
 function getDiff(array $data, array $data1, array $data2): array

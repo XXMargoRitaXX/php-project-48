@@ -22,7 +22,7 @@ function getData(string $filePath): array
     return match ($extension) {
         'json' => json_decode($fileContent, true),
         'yaml', 'yml' => Yaml::parse($fileContent),
-        default => throw new \InvalidArgumentException("Unsupported file format: .{$extension}"),
+        default => throw new \InvalidArgumentException("File format '.{$extension}' is not supported"),
     };
 }
 
