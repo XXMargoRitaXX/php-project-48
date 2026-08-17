@@ -16,16 +16,25 @@ function makeStylish(array $diff): string
 
         $lines = array_map(
             function ($key, $value) use ($currentIndent, &$iter, $depth): string {
-                $name = $value['key'] ?? $key;
-                $data = $value['data'] ?? $value;
-                $status = $value['status'] ?? '';
+                if (!isset($value['status'])) {
+                    return "{$currentIndent}  {$key}: {$iter($value, $depth + 1)}";
+                }
+
+                if ($value['status'] === 'updated') {
+                    $firstLine = "{$currentIndent}- {$value['key']}: {$iter($value['oldValue'], $depth + 1)}";
+                    $secondLine = "{$currentIndent}+ {$value['key']}: {$iter($value['newValue'], $depth + 1)}";
+                    return "{$firstLine}\n{$secondLine}";
+                }
+
+                $status = $value['status'];
                 $sign = match ($status) {
                     'added' => '+',
                     'removed' => '-',
                     'unchanged', 'nested' => ' ',
-                    default => ' ',
+                    default => throw new \InvalidArgumentException("Token status '{$status}' is not supported"),
                 };
-                return "{$currentIndent}{$sign} {$name}: {$iter($data, $depth + 1)}";
+
+                return "{$currentIndent}{$sign} {$value['key']}: {$iter($value['value'], $depth + 1)}";
             },
             array_keys($currentValue),
             $currentValue

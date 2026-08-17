@@ -26,39 +26,69 @@ function getDiff(array $data, array $data1, array $data2): array
             $keyInData1 = array_key_exists($key, $data1);
             $keyInData2 = array_key_exists($key, $data2);
 
-
-            if ($keyInData1 && $keyInData2 && (is_array($data1[$key]) && is_array($data2[$key]))) {
-                $acc[] = [
-                    'key' => $key,
-                    'status' => 'nested',
-                    'data' => getDiff($data[$key], $data1[$key], $data2[$key]),
-                ];
-                return $acc;
-            }
-
-            if ($keyInData1 && $keyInData2 && $data1[$key] === $data2[$key]) {
-                $acc[] = [
-                    'key' => $key,
-                    'status' => 'unchanged',
-                    'data' => $data1[$key],
-                ];
-                return $acc;
-            }
-
-            if ($keyInData1) {
+            if ($keyInData1 && !$keyInData2) {
                 $acc[] = [
                     'key' => $key,
                     'status' => 'removed',
-                    'data' => $data1[$key],
+                    'value' => $data1[$key],
                 ];
             }
 
-            if ($keyInData2) {
+            if (!$keyInData1 && $keyInData2) {
                 $acc[] = [
                     'key' => $key,
                     'status' => 'added',
-                    'data' => $data2[$key],
+                    'value' => $data2[$key],
                 ];
+            }
+
+
+            if ($keyInData1 && $keyInData2) {
+                $isArrayValInData1 = is_array($data1[$key]);
+                $isArrayValInData2 = is_array($data2[$key]);
+
+                if ($isArrayValInData1 && $isArrayValInData2) {
+                    $acc[] = [
+                        'key' => $key,
+                        'status' => 'nested',
+                        'value' => getDiff($data[$key], $data1[$key], $data2[$key]),
+                    ];
+                }
+
+                if ($isArrayValInData1 && !$isArrayValInData2) {
+                    $acc[] = [
+                        'key' => $key,
+                        'status' => 'updated',
+                        'oldValue' => $data1[$key],
+                        'newValue' => $data2[$key]
+                    ];
+                }
+
+                if (!$isArrayValInData1 && $isArrayValInData2) {
+                    $acc[] = [
+                        'key' => $key,
+                        'status' => 'updated',
+                        'oldValue' => $data1[$key],
+                        'newValue' => $data2[$key]
+                    ];
+                }
+
+                if (!$isArrayValInData1 && !$isArrayValInData2) {
+                    if ($data1[$key] === $data2[$key]) {
+                        $acc[] = [
+                            'key' => $key,
+                            'status' => 'unchanged',
+                            'value' => $data1[$key]
+                        ];
+                    } else {
+                        $acc[] = [
+                            'key' => $key,
+                            'status' => 'updated',
+                            'oldValue' => $data1[$key],
+                            'newValue' => $data2[$key]
+                        ];
+                    }
+                }
             }
 
             return $acc;
