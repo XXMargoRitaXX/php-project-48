@@ -9,35 +9,40 @@ use function Gendiff\Differ\genDiff;
 
 class DifferTest extends TestCase
 {
-    #[DataProvider('fileNamesProvider')]
+    #[DataProvider('formatProvider')]
     public function testGenDiff(
-        string $inputFileName1, 
-        string $inputFileName2,
-        string $outputFileName,
+        string $fileFormat, 
+        string $reportFormat
     ): void
     {
-        $inputFilePath1 = $this->getFixtureFullPath($inputFileName1);
-        $inputFilePath2 = $this->getFixtureFullPath($inputFileName2);
-        $outputFilePath = $this->getFixtureFullPath($outputFileName);
+        $filePath1 = $this->getFixtureFullPath("file1.{$fileFormat}");
+        $filePath2 = $this->getFixtureFullPath("file2.{$fileFormat}");
+        $expected = $this->getFixtureFullPath("{$reportFormat}.txt");
 
         $this->assertStringEqualsFile(
-            $outputFilePath, 
-            genDiff($inputFilePath1, $inputFilePath2)
+            $expected, 
+            genDiff($filePath1, $filePath2, $reportFormat)
         );
     }
 
-    public static function fileNamesProvider(): array
+    public static function formatProvider(): array
     {
         return [
             'Two valid JSON files, stylish format' => [
-                'file1.json', 
-                'file2.json', 
-                'stylish.txt',
+                'json', 
+                'stylish',
             ],
             'Two valid YAML files, stylish format' => [
-                'file1.yaml', 
-                'file2.yml', 
-                'stylish.txt',
+                'yaml', 
+                'stylish',
+            ],
+            'Two valid JSON files, plain format' => [
+                'json', 
+                'plain',
+            ],
+            'Two valid YAML files, plain format' => [
+                'yml', 
+                'plain',
             ],
         ];
     }
