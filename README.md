@@ -36,3 +36,7 @@
 3. Finding differences between two files with nested structures
 
 [![asciicast](https://asciinema.org/a/uCOYaYiodZP34DBd.svg)](https://asciinema.org/a/uCOYaYiodZP34DBd)
+
+4. Outputting a report in a plain format
+
+[![asciicast](https://asciinema.org/a/pE257LBOZzGf26Rf.svg)](https://asciinema.org/a/pE257LBOZzGf26Rf)
