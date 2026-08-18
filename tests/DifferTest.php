@@ -44,6 +44,14 @@ class DifferTest extends TestCase
                 'yml', 
                 'plain',
             ],
+            'Two valid JSON files, json format' => [
+                'json', 
+                'json',
+            ],
+            'Two valid YAML files, json format' => [
+                'yaml', 
+                'json',
+            ],
         ];
     }
 
