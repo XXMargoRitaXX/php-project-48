@@ -2,39 +2,35 @@
 
 namespace Gendiff\Formatters\Plain;
 
-function makePlain(array $diff): string
+function makePlain(array $diff, string $prefix = ''): string
 {
-    $iter = function (array $current, string $prefix = '') use (&$iter): string {
-        $lines = array_map(
-            function (array $item) use ($prefix, &$iter): string {
-                $status = $item['status'];
-                switch ($status) {
-                    case 'added':
-                        $value = prepareValue($item['value']);
-                        return "Property '{$prefix}{$item['key']}' was added with value: {$value}";
-                    case 'removed':
-                        return "Property '{$prefix}{$item['key']}' was removed";
-                    case 'unchanged':
-                        return '';
-                    case 'updated':
-                        $oldValue = prepareValue($item['oldValue']);
-                        $newValue = prepareValue($item['newValue']);
-                        return "Property '{$prefix}{$item['key']}' was updated. From {$oldValue} to {$newValue}";
-                    case 'nested':
-                        return $iter($item['value'], "{$prefix}{$item['key']}.");
-                    default:
-                        throw new \InvalidArgumentException("Token status '{$status}' is not supported");
-                }
-            },
-            $current
-        );
+    $lines = array_map(
+        function (array $item) use ($prefix): string {
+            $status = $item['status'];
+            switch ($status) {
+                case 'added':
+                    $value = prepareValue($item['value']);
+                    return "Property '{$prefix}{$item['key']}' was added with value: {$value}";
+                case 'removed':
+                    return "Property '{$prefix}{$item['key']}' was removed";
+                case 'unchanged':
+                    return '';
+                case 'updated':
+                    $oldValue = prepareValue($item['oldValue']);
+                    $newValue = prepareValue($item['newValue']);
+                    return "Property '{$prefix}{$item['key']}' was updated. From {$oldValue} to {$newValue}";
+                case 'nested':
+                    return makePlain($item['value'], "{$prefix}{$item['key']}.");
+                default:
+                    throw new \InvalidArgumentException("Token status '{$status}' is not supported");
+            }
+        },
+        $diff
+    );
 
-        $filteredLines = array_filter($lines, fn($line) => $line !== '');
+    $filteredLines = array_filter($lines, fn($line) => $line !== '');
 
-        return implode("\n", $filteredLines);
-    };
-
-    return $iter($diff) . "\n";
+    return implode("\n", $filteredLines);
 }
 
 function prepareValue(string | array $value): string

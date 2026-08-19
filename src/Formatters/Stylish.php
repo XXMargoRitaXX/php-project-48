@@ -47,5 +47,5 @@ function makeStylish(array $diff): string
         return implode("\n", $result);
     };
 
-    return $iter($diff, 1) . "\n";
+    return $iter($diff, 1);
 }
