@@ -5,10 +5,14 @@ namespace Gendiff\Differ;
 use function Gendiff\Formatters\format;
 use function Gendiff\Parsers\parse;
 
-function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): string
+function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): ?string
 {
     $data1 = parse($filePath1);
     $data2 = parse($filePath2);
+
+    if (is_null($data1) || is_null($data2)) {
+        return null;
+    }
 
     $data = array_replace_recursive($data1, $data2);
     $sortedData = ksortRecursive($data);

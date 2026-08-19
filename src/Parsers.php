@@ -26,9 +26,14 @@ function getData(string $filePath): array
     };
 }
 
-function parse(string $filePath): array
+function parse(string $filePath): ?array
 {
-    $data = getData($filePath);
+    try {
+        $data = getData($filePath);
+    } catch (\InvalidArgumentException $exception) {
+        echo $exception->getMessage(), PHP_EOL;
+        return null;
+    }
 
     $parsedData = $data;
     array_walk_recursive(
