@@ -6,7 +6,7 @@
             {
                 "key": "follow",
                 "status": "added",
-                "value": "false"
+                "value": false
             },
             {
                 "key": "setting1",
@@ -16,13 +16,13 @@
             {
                 "key": "setting2",
                 "status": "removed",
-                "value": "200"
+                "value": 200
             },
             {
                 "key": "setting3",
                 "status": "updated",
-                "oldValue": "true",
-                "newValue": "null"
+                "oldValue": true,
+                "newValue": null
             },
             {
                 "key": "setting4",
@@ -95,9 +95,9 @@
         "key": "group2",
         "status": "removed",
         "value": {
-            "abc": "12345",
+            "abc": 12345,
             "deep": {
-                "id": "45"
+                "id": 45
             }
         }
     },
@@ -107,10 +107,10 @@
         "value": {
             "deep": {
                 "id": {
-                    "number": "45"
+                    "number": 45
                 }
             },
-            "fee": "100500"
+            "fee": 100500
         }
     }
 ]

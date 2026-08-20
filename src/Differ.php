@@ -7,8 +7,15 @@ use function Gendiff\Parsers\parse;
 
 function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): ?string
 {
-    $data1 = parse($filePath1);
-    $data2 = parse($filePath2);
+    $fileContent1 = getFileContent($filePath1);
+    $fileContent2 = getFileContent($filePath2);
+
+    if (is_null($fileContent1) || is_null($fileContent2)) {
+        return null;
+    }
+
+    $data1 = parse($fileContent1, $filePath1);
+    $data2 = parse($fileContent2, $filePath2);
 
     if (is_null($data1) || is_null($data2)) {
         return null;
@@ -20,6 +27,47 @@ function genDiff(string $filePath1, string $filePath2, string $format = 'stylish
     $diff = getDiff($sortedData, $data1, $data2);
 
     return format($diff, $format);
+}
+
+function getFileContent(string $filePath): ?string
+{
+    try {
+        if (!file_exists($filePath)) {
+            throw new \InvalidArgumentException("File '{$filePath}' not found");
+        }
+
+        if (!is_readable($filePath)) {
+            throw new \InvalidArgumentException("File '{$filePath}' is not readable");
+        }
+
+        $fileContent = file_get_contents($filePath);
+
+        if ($fileContent === false) {
+            throw new \InvalidArgumentException(" File '{$filePath}' cannot be read");
+        }
+
+        return $fileContent;
+    } catch (\InvalidArgumentException $exception) {
+        echo $exception->getMessage(), PHP_EOL;
+        return null;
+    }
+}
+
+function ksortRecursive(mixed $current): mixed
+{
+    if (!is_array($current)) {
+        return $current;
+    }
+
+    $arrayWithSortedChildren = array_map(
+        fn($item) => ksortRecursive($item),
+        $current
+    );
+
+    $sortedArray = $arrayWithSortedChildren;
+    ksort($sortedArray);
+
+    return $sortedArray;
 }
 
 function getDiff(array $data, array $data1, array $data2): array
@@ -46,7 +94,6 @@ function getDiff(array $data, array $data1, array $data2): array
                 ];
             }
 
-
             if ($keyInData1 && $keyInData2) {
                 $isArrayValInData1 = is_array($data1[$key]);
                 $isArrayValInData2 = is_array($data2[$key]);
@@ -59,16 +106,7 @@ function getDiff(array $data, array $data1, array $data2): array
                     ];
                 }
 
-                if ($isArrayValInData1 && !$isArrayValInData2) {
-                    $acc[] = [
-                        'key' => $key,
-                        'status' => 'updated',
-                        'oldValue' => $data1[$key],
-                        'newValue' => $data2[$key]
-                    ];
-                }
-
-                if (!$isArrayValInData1 && $isArrayValInData2) {
+                if ($isArrayValInData1 xor $isArrayValInData2) {
                     $acc[] = [
                         'key' => $key,
                         'status' => 'updated',
@@ -99,21 +137,4 @@ function getDiff(array $data, array $data1, array $data2): array
         },
         []
     );
-}
-
-function ksortRecursive(mixed $array): mixed
-{
-    if (!is_array($array)) {
-        return $array;
-    }
-
-    $arrayWithSortedChildren = array_map(
-        fn($item) => ksortRecursive($item),
-        $array
-    );
-
-    $sortedArray = $arrayWithSortedChildren;
-    ksort($sortedArray);
-
-    return $sortedArray;
 }

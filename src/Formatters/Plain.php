@@ -9,43 +9,47 @@ function makePlain(array $diff, string $prefix = ''): string
             $status = $item['status'];
             switch ($status) {
                 case 'added':
-                    $value = prepareValue($item['value']);
+                    $value = toString($item['value']);
                     return "Property '{$prefix}{$item['key']}' was added with value: {$value}";
                 case 'removed':
                     return "Property '{$prefix}{$item['key']}' was removed";
                 case 'unchanged':
                     return '';
                 case 'updated':
-                    $oldValue = prepareValue($item['oldValue']);
-                    $newValue = prepareValue($item['newValue']);
+                    $oldValue = toString($item['oldValue']);
+                    $newValue = toString($item['newValue']);
                     return "Property '{$prefix}{$item['key']}' was updated. From {$oldValue} to {$newValue}";
                 case 'nested':
                     return makePlain($item['value'], "{$prefix}{$item['key']}.");
                 default:
-                    throw new \InvalidArgumentException("Token status '{$status}' is not supported");
+                    throw new \InvalidArgumentException("Item status '{$status}' is not supported");
             }
         },
         $diff
     );
 
-    $filteredLines = array_filter($lines, fn($line) => $line !== '');
+    $filteredLines = array_filter($lines);
 
     return implode("\n", $filteredLines);
 }
 
-function prepareValue(string | array $value): string
+function toString(mixed $value): string
 {
+    if (is_string($value)) {
+        return "'{$value}'";
+    }
+
     if (is_array($value)) {
         return '[complex value]';
     }
 
-    if (in_array($value, ['true', 'false', 'null'])) {
-        return $value;
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
     }
 
-    if (ctype_digit($value)) {
-        return $value;
+    if (is_null($value)) {
+        return 'null';
     }
 
-    return "'{$value}'";
+    return strval($value);
 }

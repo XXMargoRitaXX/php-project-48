@@ -7,40 +7,39 @@ const REPLACER = ' ';
 
 function makeStylish(array $diff): string
 {
-    $iter = function (mixed $currentValue, int $depth) use (&$iter): string {
-        if (!is_array($currentValue)) {
-            return $currentValue;
+    $iter = function (mixed $current, int $depth) use (&$iter): string {
+        if (!is_array($current)) {
+            return toString($current);
         }
 
-        $currentIndent = str_repeat(REPLACER, SPACES_COUNT * $depth - 2);
+        $indent = str_repeat(REPLACER, SPACES_COUNT * $depth - 2);
+        $bracketIndent = str_repeat(REPLACER, SPACES_COUNT * ($depth - 1));
 
         $lines = array_map(
-            function ($key, $value) use ($currentIndent, &$iter, $depth): string {
-                if (!isset($value['status'])) {
-                    return "{$currentIndent}  {$key}: {$iter($value, $depth + 1)}";
+            function ($key, $item) use ($indent, &$iter, $depth): string {
+                if (!isset($item['status'])) {
+                    return "{$indent}  {$key}: {$iter($item, $depth + 1)}";
                 }
 
-                if ($value['status'] === 'updated') {
-                    $firstLine = "{$currentIndent}- {$value['key']}: {$iter($value['oldValue'], $depth + 1)}";
-                    $secondLine = "{$currentIndent}+ {$value['key']}: {$iter($value['newValue'], $depth + 1)}";
-                    return "{$firstLine}\n{$secondLine}";
+                if ($item['status'] === 'updated') {
+                    $removedLine = "{$indent}- {$item['key']}: {$iter($item['oldValue'], $depth + 1)}";
+                    $addedLine = "{$indent}+ {$item['key']}: {$iter($item['newValue'], $depth + 1)}";
+                    return "{$removedLine}\n{$addedLine}";
                 }
 
-                $status = $value['status'];
+                $status = $item['status'];
                 $sign = match ($status) {
                     'added' => '+',
                     'removed' => '-',
                     'unchanged', 'nested' => ' ',
-                    default => throw new \InvalidArgumentException("Token status '{$status}' is not supported"),
+                    default => throw new \InvalidArgumentException("Item status '{$status}' is not supported"),
                 };
 
-                return "{$currentIndent}{$sign} {$value['key']}: {$iter($value['value'], $depth + 1)}";
+                return "{$indent}{$sign} {$item['key']}: {$iter($item['value'], $depth + 1)}";
             },
-            array_keys($currentValue),
-            $currentValue
+            array_keys($current),
+            $current
         );
-
-        $bracketIndent = str_repeat(REPLACER, SPACES_COUNT * ($depth - 1));
 
         $result = ['{', ...$lines, "{$bracketIndent}}"];
 
@@ -48,4 +47,21 @@ function makeStylish(array $diff): string
     };
 
     return $iter($diff, 1);
+}
+
+function toString(mixed $value): string
+{
+    if (is_string($value)) {
+        return $value;
+    }
+
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    }
+
+    if (is_null($value)) {
+        return 'null';
+    }
+
+    return strval($value);
 }
