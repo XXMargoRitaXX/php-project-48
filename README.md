@@ -1,3 +1,4 @@
+<a id="readme-top"></a>
 <h1 align='center'>Generate diff</h1>
 
 ### Hexlet tests and linter status:
@@ -11,11 +12,22 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=XXMargoRitaXX_php-project-48&metric=coverage)](https://sonarcloud.io/summary/new_code?id=XXMargoRitaXX_php-project-48)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=XXMargoRitaXX_php-project-48&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=XXMargoRitaXX_php-project-48)
 
-### Description:
+## About
 
-"Generate diff" is a program that determines the difference between two data structures
+**"Generate diff"** is a program that determines the difference between two data structures.
 
-### Requirements:
+Supported input formats:
+
+* **JSON** ([demo](https://asciinema.org/a/BYPKB5CAWANYChGv "Gendiff: json-json example"))
+* **YAML** ([demo](https://asciinema.org/a/1OtHYB9yCaET58Tx "Gendiff: yaml-yaml example"))
+
+Supported report formats:
+
+* *stylish* ([demo](https://asciinema.org/a/uCOYaYiodZP34DBd "Gendiff: nested structures example"))
+* *plain* ([demo](https://asciinema.org/a/pE257LBOZzGf26Rf "Gendiff: plain report format example"))
+* *json* ([demo](https://asciinema.org/a/8my6hXHjCPPKypDG "Gendiff: json report format example"))
+
+## Requirements
 
 * Linux, macOS, WSL
 * Git
@@ -23,20 +35,49 @@
 * Composer
 * Make
 
-### Examples:
+## Installation
 
-1. Finding differences between two flat JSON files
+1. Cloning the repository
 
-[![asciicast](https://asciinema.org/a/BYPKB5CAWANYChGv.svg)](https://asciinema.org/a/BYPKB5CAWANYChGv)
+```sh
+git clone https://github.com/XXMargoRitaXX/php-project-48.git
+```
 
-2. Finding differences between two flat YAML files
+2. Changing to the php-project-48 directory
 
-[![asciicast](https://asciinema.org/a/1OtHYB9yCaET58Tx.svg)](https://asciinema.org/a/1OtHYB9yCaET58Tx)
+```sh
+cd php-project-48
+```
 
-3. Finding differences between two files with nested structures
+3. Installing dependencies
 
-[![asciicast](https://asciinema.org/a/uCOYaYiodZP34DBd.svg)](https://asciinema.org/a/uCOYaYiodZP34DBd)
+```sh
+make install
+```
 
-4. Outputting a report in a plain format
+4. Checking functionality
 
-[![asciicast](https://asciinema.org/a/pE257LBOZzGf26Rf.svg)](https://asciinema.org/a/pE257LBOZzGf26Rf)
+```sh
+bin/gendiff -h
+```
+
+## Usage
+
+1. As a command-line utility:
+
+```sh
+bin/gendiff /path/to/file1.json /path/to/file2.json
+```
+By default, the report uses a *stylish* format. To change the format, use the `-f` (`--format`) option:
+
+```sh
+bin/gendiff -f plain /path/to/file1.json /path/to/file2.json
+```
+
+2. As a function:
+
+```php
+echo \Gendiff\Differ\genDiff($filePath1, $filePath2, $reportFormat), PHP_EOL;
+```
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
