@@ -10,33 +10,48 @@ use function Gendiff\Differ\genDiff;
 
 class DifferTest extends TestCase
 {
-    public function testGenDiffDefaultReportFormat(): void
+    #[DataProvider('fileExtensionProvider')]
+    public function testGenDiffDefault(string $fileExtension1, string $fileExtension2): void
     {
-        $filePath1 = self::getFixtureFullPath('file1.json');
-        $filePath2 = self::getFixtureFullPath('file2.json');
-        $expected = self::getFixtureFullPath('stylish.txt');
+        $filePath1 = self::getFixtureFullPath("file1.{$fileExtension1}");
+        $filePath2 = self::getFixtureFullPath("file2.{$fileExtension2}");
+        $expected = self::getFixtureFullPath("stylish.txt");
 
         $this->assertStringEqualsFile($expected, genDiff($filePath1, $filePath2));
     }
 
-    #[DataProvider('dataGenDiff')]
-    public function testGenDiff(
-        string $fileName1,
-        string $fileName2,
-        string $reportFormat,
-    ): void {
-        $filePath1 = self::getFixtureFullPath($fileName1);
-        $filePath2 = self::getFixtureFullPath($fileName2);
-        $expected = self::getFixtureFullPath("{$reportFormat}.txt");
+    #[DataProvider('fileExtensionProvider')]
+    public function testGenDiffStylish(string $fileExtension1, string $fileExtension2): void
+    {
+        $filePath1 = self::getFixtureFullPath("file1.{$fileExtension1}");
+        $filePath2 = self::getFixtureFullPath("file2.{$fileExtension2}");
+        $expected = self::getFixtureFullPath("stylish.txt");
 
-        $this->assertStringEqualsFile(
-            $expected,
-            genDiff($filePath1, $filePath2, $reportFormat)
-        );
+        $this->assertStringEqualsFile($expected, genDiff($filePath1, $filePath2, 'stylish'));
     }
 
-    #[DataProvider('dataGenDiffExceptions')]
-    public function testGenDiffExceptions(
+    #[DataProvider('fileExtensionProvider')]
+    public function testGenDiffPlain(string $fileExtension1, string $fileExtension2): void
+    {
+        $filePath1 = self::getFixtureFullPath("file1.{$fileExtension1}");
+        $filePath2 = self::getFixtureFullPath("file2.{$fileExtension2}");
+        $expected = self::getFixtureFullPath("plain.txt");
+
+        $this->assertStringEqualsFile($expected, genDiff($filePath1, $filePath2, 'plain'));
+    }
+
+    #[DataProvider('fileExtensionProvider')]
+    public function testGenDiffJson(string $fileExtension1, string $fileExtension2): void
+    {
+        $filePath1 = self::getFixtureFullPath("file1.{$fileExtension1}");
+        $filePath2 = self::getFixtureFullPath("file2.{$fileExtension2}");
+        $expected = self::getFixtureFullPath("json.txt");
+
+        $this->assertStringEqualsFile($expected, genDiff($filePath1, $filePath2, 'json'));
+    }
+
+    #[DataProvider('exceptionProvider')]
+    public function testGenDiffException(
         string $fileName1,
         string $fileName2,
         string $reportFormat,
@@ -51,63 +66,40 @@ class DifferTest extends TestCase
         genDiff($filePath1, $filePath2, $reportFormat);
     }
 
-    public static function dataGenDiff(): array
+    public static function fileExtensionProvider(): array
     {
         return [
-            'JSON file format' => [
-                'file1.json',
-                'file2.json',
-                'stylish',
-            ],
-            'YAML file format (.yaml, .yml)' => [
-                'file1.yaml',
-                'file2.yml',
-                'stylish',
-            ],
-            'plain report format' => [
-                'file1.json',
-                'file2.json',
-                'plain',
-            ],
-            'json report format' => [
-                'file1.json',
-                'file2.json',
-                'json',
-            ],
-            'file name contains Cyrillic characters' => [
-                'файл1.json',
-                'file2.json',
-                'stylish',
-            ],
+            'JSON file format' => ['json', 'json'],
+            'YAML file format' => ['yaml', 'yml'],
         ];
     }
 
-    public static function dataGenDiffExceptions(): array
+    public static function exceptionProvider(): array
     {
-        $nonExistentFile = 'file3.json';
-        $nonExistentFilePath = self::getFixtureFullPath($nonExistentFile);
+        $nonExistentFileName = 'file3.json';
+        $nonExistentFilePath = self::getFixtureFullPath($nonExistentFileName);
 
-        $withoutExtensionFile = 'file1';
-        $withoutExtensionFilePath = self::getFixtureFullPath($withoutExtensionFile);
+        $withoutExtensionFileName = 'file1';
+        $withoutExtensionFilePath = self::getFixtureFullPath($withoutExtensionFileName);
 
         return [
             'non-existent file' => [
                 'file1.json',
-                $nonExistentFile,
+                $nonExistentFileName,
                 'stylish',
                 "The file '{$nonExistentFilePath}' does not exist or is not readable",
             ],
             'file without extension' => [
-                $withoutExtensionFile,
+                $withoutExtensionFileName,
                 'file2.json',
                 'stylish',
                 "The file '{$withoutExtensionFilePath}' has no extension",
             ],
-            'unsupported file format' => [
+            'unsupported file extension' => [
                 'file1.xml',
                 'file2.json',
                 'stylish',
-                "The file format '.xml' is not supported",
+                "The file extension '.xml' is not supported",
             ],
             'unsupported report format' => [
                 'file1.json',

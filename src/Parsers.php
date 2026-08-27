@@ -17,6 +17,6 @@ function parse(string $fileContent, string $filePath): array
     return match ($extension) {
         'json' => json_decode($fileContent, true),
         'yaml', 'yml' => Yaml::parse($fileContent),
-        default => throw new \InvalidArgumentException("The file format '.{$extension}' is not supported"),
+        default => throw new \InvalidArgumentException("The file extension '.{$extension}' is not supported"),
     };
 }
