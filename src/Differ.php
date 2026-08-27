@@ -12,11 +12,9 @@ function genDiff(string $filePath1, string $filePath2, string $format = 'stylish
 
     $data1 = parse($fileContent1, $filePath1);
     $data2 = parse($fileContent2, $filePath2);
-
     $data = array_replace_recursive($data1, $data2);
-    $sortedData = ksortRecursive($data);
 
-    $diff = getDiff($sortedData, $data1, $data2);
+    $diff = getDiff($data, $data1, $data2);
 
     return format($diff, $format);
 }
@@ -36,27 +34,13 @@ function getFileContent(string $filePath): string
     return $fileContent;
 }
 
-function ksortRecursive(mixed $current): mixed
-{
-    if (!is_array($current)) {
-        return $current;
-    }
-
-    $arrayWithSortedChildren = array_map(
-        fn($item) => ksortRecursive($item),
-        $current
-    );
-
-    $sortedArray = $arrayWithSortedChildren;
-    ksort($sortedArray);
-
-    return $sortedArray;
-}
-
 function getDiff(array $data, array $data1, array $data2): array
 {
+    $keys = array_keys($data);
+    sort($keys);
+
     return array_reduce(
-        array_keys($data),
+        $keys,
         function (array $acc, mixed $key) use ($data, $data1, $data2): array {
             $keyInData1 = array_key_exists($key, $data1);
             $keyInData2 = array_key_exists($key, $data2);
