@@ -2,7 +2,6 @@
 
 namespace Gendiff\Tests;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -60,7 +59,7 @@ class DifferTest extends TestCase
         $filePath1 = self::getFixtureFullPath($fileName1);
         $filePath2 = self::getFixtureFullPath($fileName2);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
         genDiff($filePath1, $filePath2, $reportFormat);
