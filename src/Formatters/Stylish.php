@@ -32,7 +32,7 @@ function makeStylish(array $diff): string
                     'added' => '+',
                     'removed' => '-',
                     'unchanged', 'nested' => ' ',
-                    default => throw new \InvalidArgumentException("Item status '{$status}' is not supported"),
+                    default => throw new \InvalidArgumentException("The item status '{$status}' is not supported"),
                 };
 
                 return "{$indent}{$sign} {$item['key']}: {$iter($item['value'], $depth + 1)}";

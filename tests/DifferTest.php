@@ -2,6 +2,7 @@
 
 namespace Gendiff\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -39,13 +40,15 @@ class DifferTest extends TestCase
         string $fileName1,
         string $fileName2,
         string $reportFormat,
-        string $expected,
+        string $exceptionMessage,
     ): void {
         $filePath1 = self::getFixtureFullPath($fileName1);
         $filePath2 = self::getFixtureFullPath($fileName2);
 
-        $this->expectOutputString($expected);
-        $this->assertNull(genDiff($filePath1, $filePath2, $reportFormat));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($exceptionMessage);
+
+        genDiff($filePath1, $filePath2, $reportFormat);
     }
 
     public static function dataGenDiff(): array
@@ -92,25 +95,25 @@ class DifferTest extends TestCase
                 'file1.json',
                 $nonExistentFile,
                 'stylish',
-                "File '{$nonExistentFilePath}' not found" . PHP_EOL,
+                "The file '{$nonExistentFilePath}' does not exist or is not readable",
             ],
             'file without extension' => [
                 $withoutExtensionFile,
                 'file2.json',
                 'stylish',
-                "File '{$withoutExtensionFilePath}' has no extension" . PHP_EOL,
+                "The file '{$withoutExtensionFilePath}' has no extension",
             ],
             'unsupported file format' => [
                 'file1.xml',
                 'file2.json',
                 'stylish',
-                "File format '.xml' is not supported" . PHP_EOL,
+                "The file format '.xml' is not supported",
             ],
             'unsupported report format' => [
                 'file1.json',
                 'file2.json',
                 'simple',
-                "Report format 'simple' is not supported" . PHP_EOL,
+                "The report format 'simple' is not supported",
             ],
         ];
     }

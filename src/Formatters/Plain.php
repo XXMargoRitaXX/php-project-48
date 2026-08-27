@@ -22,7 +22,7 @@ function makePlain(array $diff, string $prefix = ''): string
                 case 'nested':
                     return makePlain($item['value'], "{$prefix}{$item['key']}.");
                 default:
-                    throw new \InvalidArgumentException("Item status '{$status}' is not supported");
+                    throw new \InvalidArgumentException("The item status '{$status}' is not supported");
             }
         },
         $diff

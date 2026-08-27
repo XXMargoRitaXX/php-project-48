@@ -5,21 +5,13 @@ namespace Gendiff\Differ;
 use function Gendiff\Formatters\format;
 use function Gendiff\Parsers\parse;
 
-function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): ?string
+function genDiff(string $filePath1, string $filePath2, string $format = 'stylish'): string
 {
     $fileContent1 = getFileContent($filePath1);
     $fileContent2 = getFileContent($filePath2);
 
-    if (is_null($fileContent1) || is_null($fileContent2)) {
-        return null;
-    }
-
     $data1 = parse($fileContent1, $filePath1);
     $data2 = parse($fileContent2, $filePath2);
-
-    if (is_null($data1) || is_null($data2)) {
-        return null;
-    }
 
     $data = array_replace_recursive($data1, $data2);
     $sortedData = ksortRecursive($data);
@@ -29,28 +21,19 @@ function genDiff(string $filePath1, string $filePath2, string $format = 'stylish
     return format($diff, $format);
 }
 
-function getFileContent(string $filePath): ?string
+function getFileContent(string $filePath): string
 {
-    try {
-        if (!file_exists($filePath)) {
-            throw new \InvalidArgumentException("File '{$filePath}' not found");
-        }
-
-        if (!is_readable($filePath)) {
-            throw new \InvalidArgumentException("File '{$filePath}' is not readable");
-        }
-
-        $fileContent = file_get_contents($filePath);
-
-        if ($fileContent === false) {
-            throw new \InvalidArgumentException(" File '{$filePath}' cannot be read");
-        }
-
-        return $fileContent;
-    } catch (\InvalidArgumentException $exception) {
-        echo $exception->getMessage(), PHP_EOL;
-        return null;
+    if (!is_readable($filePath)) {
+        throw new \InvalidArgumentException("The file '{$filePath}' does not exist or is not readable");
     }
+
+    $fileContent = file_get_contents($filePath);
+
+    if ($fileContent === false) {
+        throw new \InvalidArgumentException("The file '{$filePath}' cannot be read");
+    }
+
+    return $fileContent;
 }
 
 function ksortRecursive(mixed $current): mixed
