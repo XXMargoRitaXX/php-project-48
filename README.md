@@ -77,7 +77,7 @@ bin/gendiff -f plain /path/to/file1.json /path/to/file2.json
 2. As a function:
 
 ```php
-echo \Gendiff\Differ\genDiff($filePath1, $filePath2, $reportFormat), PHP_EOL;
+echo \Differ\Differ\genDiff($filePath1, $filePath2, $reportFormat), PHP_EOL;
 ```
 
 <p align="right"><a href="#readme-top">Back to top</a></p>

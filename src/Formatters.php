@@ -1,10 +1,10 @@
 <?php
 
-namespace Gendiff\Formatters;
+namespace Differ\Formatters;
 
-use function Gendiff\Formatters\Json\makeJson;
-use function Gendiff\Formatters\Plain\makePlain;
-use function Gendiff\Formatters\Stylish\makeStylish;
+use function Differ\Formatters\Json\makeJson;
+use function Differ\Formatters\Plain\makePlain;
+use function Differ\Formatters\Stylish\makeStylish;
 
 function format(array $diff, string $format): string
 {
