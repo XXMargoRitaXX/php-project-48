@@ -5,48 +5,51 @@ namespace Differ\Formatters\Stylish;
 const SPACES_COUNT = 4;
 const REPLACER = ' ';
 
-function makeStylish(array $diff): string
+function makeStylish(mixed $diff, int $depth = 1): string
 {
-    $iter = function (mixed $current, int $depth) use (&$iter): string {
-        if (!is_array($current)) {
-            return toString($current);
-        }
+    if (!is_array($diff)) {
+        return toString($diff);
+    }
 
-        $indent = str_repeat(REPLACER, SPACES_COUNT * $depth - 2);
-        $bracketIndent = str_repeat(REPLACER, SPACES_COUNT * ($depth - 1));
+    $indent = str_repeat(REPLACER, SPACES_COUNT * $depth - 2);
+    $bracketIndent = str_repeat(REPLACER, SPACES_COUNT * ($depth - 1));
 
-        $lines = array_map(
-            function ($key, $item) use ($indent, &$iter, $depth): string {
-                if (!isset($item['status'])) {
-                    return "{$indent}  {$key}: {$iter($item, $depth + 1)}";
-                }
+    $lines = array_map(
+        function ($key, $item) use ($indent, $depth): string {
+            if (!isset($item['status'])) {
+                $value = makeStylish($item, $depth + 1);
+                return "{$indent}  {$key}: {$value}";
+            }
 
-                if ($item['status'] === 'updated') {
-                    $removedLine = "{$indent}- {$item['key']}: {$iter($item['oldValue'], $depth + 1)}";
-                    $addedLine = "{$indent}+ {$item['key']}: {$iter($item['newValue'], $depth + 1)}";
-                    return "{$removedLine}\n{$addedLine}";
-                }
+            if ($item['status'] === 'updated') {
+                $oldValue = makeStylish($item['oldValue'], $depth + 1);
+                $newValue = makeStylish($item['newValue'], $depth + 1);
 
-                $status = $item['status'];
-                $sign = match ($status) {
-                    'added' => '+',
-                    'removed' => '-',
-                    'unchanged', 'nested' => ' ',
-                    default => throw new \InvalidArgumentException("The item status '{$status}' is not supported"),
-                };
+                $removedLine = "{$indent}- {$item['key']}: {$oldValue}";
+                $addedLine = "{$indent}+ {$item['key']}: {$newValue}";
 
-                return "{$indent}{$sign} {$item['key']}: {$iter($item['value'], $depth + 1)}";
-            },
-            array_keys($current),
-            $current
-        );
+                return "{$removedLine}\n{$addedLine}";
+            }
 
-        $result = ['{', ...$lines, "{$bracketIndent}}"];
+            $status = $item['status'];
+            $sign = match ($status) {
+                'added' => '+',
+                'removed' => '-',
+                'unchanged', 'nested' => ' ',
+                default => throw new \InvalidArgumentException("The item status '{$status}' is not supported"),
+            };
 
-        return implode("\n", $result);
-    };
+            $value = makeStylish($item['value'], $depth + 1);
 
-    return $iter($diff, 1);
+            return "{$indent}{$sign} {$item['key']}: {$value}";
+        },
+        array_keys($diff),
+        $diff
+    );
+
+    $result = ['{', ...$lines, "{$bracketIndent}}"];
+
+    return implode("\n", $result);
 }
 
 function toString(mixed $value): string
