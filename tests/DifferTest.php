@@ -58,10 +58,9 @@ class DifferTest extends TestCase
     ): void {
         $filePath1 = self::getFixtureFullPath($fileName1);
         $filePath2 = self::getFixtureFullPath($fileName2);
+        $exception = new \InvalidArgumentException($exceptionMessage);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage($exceptionMessage);
-
+        $this->expectExceptionObject($exception);
         genDiff($filePath1, $filePath2, $reportFormat);
     }
 
